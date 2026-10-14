@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Recap Dashboard</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+
+    <!-- Header / Navbar -->
+    <header class="bg-indigo-600 text-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-xl font-bold flex items-center gap-2">
+                <i class="fa-solid fa-chart-line"></i> Sales Recap Dashboard
+            </h1>
+            <span class="text-xs bg-indigo-500 px-3 py-1 rounded-full font-medium">Ready to Deploy</span>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        
+        <!-- Summary Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Total Penjualan</p>
+                    <h3 id="totalSales" class="text-2xl font-bold text-gray-900 mt-1">Rp 0</h3>
+                </div>
+                <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-rupiah-sign"></i>
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Total Transaksi</p>
+                    <h3 id="totalTransactions" class="text-2xl font-bold text-gray-900 mt-1">0</h3>
+                </div>
+                <div class="w-12 h-12 bg-green-50 text-green-600 rounded-full flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-receipt"></i>
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Rata-rata Transaksi</p>
+                    <h3 id="avgTransaction" class="text-2xl font-bold text-gray-900 mt-1">Rp 0</h3>
+                </div>
+                <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-calculator"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Section -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="p-6 border-b border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4">
+                <h2 class="text-lg font-semibold text-gray-800">Data Rekap Penjualan</h2>
+                <div class="flex items-center gap-3 w-full md:w-auto">
+                    <input type="text" id="searchInput" placeholder="Cari data..." class="border border-gray-300 px-4 py-2 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full md:w-64">
+                    <button onclick="alert('Fitur tambah data dapat disesuaikan dengan database Anda.')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 whitespace-nowrap">
+                        <i class="fa-solid fa-plus"></i> Tambah
+                    </button>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-50 text-gray-600 text-xs uppercase tracking-wider border-b border-gray-100">
+                            <th class="py-3 px-6">Tanggal</th>
+                            <th class="py-3 px-6">ID Transaksi</th>
+                            <th class="py-3 px-6">Keterangan / Produk</th>
+                            <th class="py-3 px-6 text-right">Jumlah (Rp)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="salesTableBody" class="divide-y divide-gray-100 text-sm">
+                        <!-- Data akan dimasukkan lewat JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-6 text-xs text-gray-400">
+        &copy; 2026 Sales Recap Dashboard. Hosted via GitHub Pages.
+    </footer>
+
+    <!-- JavaScript Data & Logic -->
+    <script>
+        // Contoh Data Dummy Rekap Sales
+        const salesData = [
+            { date: "2026-10-01", id: "TRX-001", desc: "Penjualan Produk A", amount: 1500000 },
+            { date: "2026-10-02", id: "TRX-002", desc: "Penjualan Produk B", amount: 2350000 },
+            { date: "2026-10-03", id: "TRX-003", desc: "Penjualan Paket Bundling", amount: 4200000 },
+            { date: "2026-10-04", id: "TRX-004", desc: "Penjualan Produk C", amount: 950000 },
+            { date: "2026-10-05", id: "TRX-005", desc: "Penjualan Grosir", amount: 6100000 }
+        ];
+
+        function formatRupiah(number) {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number);
+        }
+
+        function renderDashboard(data) {
+            const tbody = document.getElementById('salesTableBody');
+            tbody.innerHTML = '';
+
+            let totalSales = 0;
+            let totalTransactions = data.length;
+
+            data.forEach(item => {
+                totalSales += item.amount;
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-gray-50 transition';
+                tr.innerHTML = `
+                    <td class="py-3 px-6 text-gray-500">${item.date}</td>
+                    <td class="py-3 px-6 font-medium text-gray-800">${item.id}</td>
+                    <td class="py-3 px-6 text-gray-600">${item.desc}</td>
+                    <td class="py-3 px-6 text-right font-semibold text-gray-900">${formatRupiah(item.amount)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // Update Summary Cards
+            document.getElementById('totalSales').innerText = formatRupiah(totalSales);
+            document.getElementById('totalTransactions').innerText = totalTransactions;
+            const avg = totalTransactions > 0 ? totalSales / totalTransactions : 0;
+            document.getElementById('avgTransaction').innerText = formatRupiah(avg);
+        }
+
+        // Live Search Handler
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const keyword = e.target.value.toLowerCase();
+            const filtered = salesData.filter(item => 
+                item.id.toLowerCase().includes(keyword) || 
+                item.desc.toLowerCase().includes(keyword) ||
+                item.date.includes(keyword)
+            );
+            renderDashboard(filtered);
+        });
+
+        // Inisialisasi saat pertama load
+        renderDashboard(salesData);
+    </script>
+</body>
+</html>
