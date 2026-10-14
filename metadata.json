@@ -1,0 +1,6 @@
+{
+  "name": "Rekap Penjualan",
+  "description": "Dashboard interaktif data rekap penjualan yang terhubung langsung dengan Google Sheets.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
