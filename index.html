@@ -1,268 +1,143 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sales Recap Dashboard - Area Monitoring</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rekap Penjualan - Dashboard Interaktif</title>
+  
+  <!-- SEO & Social Sharing Meta Tags -->
+  <meta name="description" content="Dashboard interaktif data rekap penjualan yang terhubung langsung dengan Google Sheets." />
+  <meta property="og:title" content="Rekap Penjualan - Dashboard Interaktif" />
+  <meta property="og:description" content="Dashboard interaktif data rekap penjualan yang terhubung langsung dengan Google Sheets." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://ais-pre-vmgreydjwcuqo2kqij4njx-965477161653.asia-southeast1.run.app" />
+
+  <!-- URL Target Aplikasi -->
+  <meta http-equiv="refresh" content="0; url=https://ais-pre-vmgreydjwcuqo2kqij4njx-965477161653.asia-southeast1.run.app" />
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232563eb' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M3 3v18h18'/><path d='m19 9-5 5-4-4-3 3'/></svg>" />
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+    body {
+      background-color: #0f172a;
+      color: #f8fafc;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      text-align: center;
+    }
+    .card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 1.25rem;
+      padding: 2.5rem 2rem;
+      max-width: 480px;
+      width: 100%;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+    }
+    .icon-box {
+      width: 64px;
+      height: 64px;
+      background: rgba(37, 99, 235, 0.15);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem auto;
+      color: #3b82f6;
+    }
+    h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+    p {
+      font-size: 0.925rem;
+      color: #94a3b8;
+      line-height: 1.5;
+      margin-bottom: 1.75rem;
+    }
+    .spinner {
+      width: 36px;
+      height: 36px;
+      border: 3.5px solid rgba(148, 163, 184, 0.2);
+      border-top-color: #3b82f6;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 1.5rem auto;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+      padding: 0.85rem 1.25rem;
+      background: #2563eb;
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border-radius: 0.75rem;
+      transition: all 0.2s ease;
+      border: none;
+      cursor: pointer;
+    }
+    .btn:hover {
+      background: #1d4ed8;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+    }
+    .note {
+      font-size: 0.75rem;
+      color: #64748b;
+      margin-top: 1.25rem;
+    }
+  </style>
+
+  <script>
+    // Pengalihan instan melalui JavaScript
+    const TARGET_URL = "https://ais-pre-vmgreydjwcuqo2kqij4njx-965477161653.asia-southeast1.run.app";
+    try {
+      window.location.replace(TARGET_URL);
+    } catch (e) {
+      window.location.href = TARGET_URL;
+    }
+  </script>
 </head>
-<body class="bg-slate-900 text-slate-100 font-sans antialiased">
-
-    <!-- Navbar -->
-    <header class="bg-slate-800 border-b border-slate-700 sticky top-0 z-50 shadow-md">
-        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <div class="bg-indigo-600/20 border border-indigo-500/30 p-2.5 rounded-xl text-indigo-400">
-                    <i class="fa-solid fa-chart-line text-xl"></i>
-                </div>
-                <div>
-                    <h1 class="text-base font-bold tracking-tight text-white">Sales Recap Dashboard</h1>
-                    <p class="text-xs text-slate-400">Area Monitoring & Transaksi Harian</p>
-                </div>
-            </div>
-            <div class="flex items-center gap-3">
-                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Active System
-                </span>
-            </div>
-        </div>
-    </header>
-
-    <!-- Main Container -->
-    <main class="max-w-7xl mx-auto px-4 py-8 space-y-6">
-        
-        <!-- Summary Cards Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="bg-slate-800/60 border border-slate-700/60 p-5 rounded-2xl backdrop-blur-sm">
-                <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Total Sales SPD</p>
-                <h3 id="totalSpd" class="text-xl font-bold text-white mt-1">Rp 0</h3>
-                <span class="text-xs text-indigo-400 mt-2 inline-block"><i class="fa-solid fa-store"></i> Kinerja Toko Reguler</span>
-            </div>
-            <div class="bg-slate-800/60 border border-slate-700/60 p-5 rounded-2xl backdrop-blur-sm">
-                <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Sales Beanspot</p>
-                <h3 id="totalBeanspot" class="text-xl font-bold text-white mt-1">Rp 0</h3>
-                <span class="text-xs text-amber-400 mt-2 inline-block"><i class="fa-solid fa-mug-hot"></i> Kategori F&B</span>
-            </div>
-            <div class="bg-slate-800/60 border border-slate-700/60 p-5 rounded-2xl backdrop-blur-sm">
-                <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Sales PSM & PWP</p>
-                <h3 id="totalPsmPwp" class="text-xl font-bold text-white mt-1">Rp 0</h3>
-                <span class="text-xs text-emerald-400 mt-2 inline-block"><i class="fa-solid fa-tags"></i> Program Promosi</span>
-            </div>
-            <div class="bg-slate-800/60 border border-slate-700/60 p-5 rounded-2xl backdrop-blur-sm">
-                <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Total Transaksi</p>
-                <h3 id="totalCount" class="text-xl font-bold text-white mt-1">0</h3>
-                <span class="text-xs text-blue-400 mt-2 inline-block"><i class="fa-solid fa-receipt"></i> Data Masuk</span>
-            </div>
-        </div>
-
-        <!-- Content Card -->
-        <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl overflow-hidden backdrop-blur-sm shadow-xl">
-            <!-- Table Controls -->
-            <div class="p-5 border-b border-slate-700/60 flex flex-col md:flex-row justify-between items-center gap-4">
-                <div>
-                    <h2 class="text-sm font-bold text-white">Log Transaksi & Kategori Toko</h2>
-                    <p class="text-xs text-slate-400 mt-0.5">Rekapitulasi rinci per tanggal dan kode toko</p>
-                </div>
-                <div class="flex items-center gap-3 w-full md:w-auto">
-                    <div class="relative w-full md:w-72">
-                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                            <i class="fa-solid fa-search text-xs"></i>
-                        </span>
-                        <input type="text" id="searchInput" placeholder="Cari Kode Toko, ID, dll..." class="w-full pl-9 pr-4 py-2 bg-slate-900/60 border border-slate-700 rounded-xl text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    </div>
-                    <button onclick="openModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow-md transition flex items-center gap-2 whitespace-nowrap">
-                        <i class="fa-solid fa-plus"></i> Input Rekap
-                    </button>
-                </div>
-            </div>
-
-            <!-- Table -->
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-slate-900/40 text-slate-400 text-[11px] uppercase tracking-wider border-b border-slate-700/60 font-semibold">
-                            <th class="py-3 px-4">Tanggal</th>
-                            <th class="py-3 px-4">ID Transaksi</th>
-                            <th class="py-3 px-4">Kode Toko</th>
-                            <th class="py-3 px-4 text-right">SPD (Rp)</th>
-                            <th class="py-3 px-4 text-right">Beanspot (Rp)</th>
-                            <th class="py-3 px-4 text-right">PSM / PWP (Rp)</th>
-                            <th class="py-3 px-4">Inputer</th>
-                        </tr>
-                    </thead>
-                    <tbody id="salesTableBody" class="divide-y divide-slate-700/40 text-xs text-slate-300">
-                        <!-- Data Dinamis JS -->
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Footer Pagination Info -->
-            <div class="p-4 bg-slate-900/30 border-t border-slate-700/60 flex justify-between items-center text-xs text-slate-400">
-                <span id="dataInfo">Menampilkan data rekap area</span>
-                <span class="px-3 py-1 bg-slate-800 border border-slate-700 rounded-lg text-slate-300">Halaman 1 / 1</span>
-            </div>
-        </div>
-    </main>
-
-    <!-- Modal Input Data -->
-    <div id="dataModal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs hidden items-center justify-center z-50 p-4">
-        <div class="bg-slate-800 border border-slate-700 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden">
-            <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900/40">
-                <h3 class="font-bold text-white text-xs flex items-center gap-2">
-                    <i class="fa-solid fa-circle-plus text-indigo-400"></i> Tambah Rekap Transaksi Baru
-                </h3>
-                <button onclick="closeModal()" class="text-slate-400 hover:text-white text-xs"><i class="fa-solid fa-xmark text-sm"></i></button>
-            </div>
-            <div class="p-5 space-y-3.5">
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-[11px] font-medium text-slate-400 mb-1">Tanggal</label>
-                        <input type="date" id="inputDate" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] font-medium text-slate-400 mb-1">Kode Toko</label>
-                        <input type="text" id="inputStore" placeholder="Contoh: KF34" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    </div>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-[11px] font-medium text-slate-400 mb-1">ID Transaksi</label>
-                        <input type="text" id="inputId" placeholder="Contoh: TRX-101" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] font-medium text-slate-400 mb-1">Email Inputer</label>
-                        <input type="email" id="inputEmail" placeholder="nama@gmail.com" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    </div>
-                </div>
-                <div class="grid grid-cols-3 gap-3">
-                    <div>
-                        <label class="block text-[11px] font-medium text-slate-400 mb-1">Sales SPD (Rp)</label>
-                        <input type="number" id="inputSpd" placeholder="0" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] font-medium text-slate-400 mb-1">Beanspot (Rp)</label>
-                        <input type="number" id="inputBeanspot" placeholder="0" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] font-medium text-slate-400 mb-1">PSM / PWP (Rp)</label>
-                        <input type="number" id="inputPsm" placeholder="0" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    </div>
-                </div>
-            </div>
-            <div class="p-4 bg-slate-900/40 border-t border-slate-700 flex justify-end gap-2">
-                <button onclick="closeModal()" class="px-4 py-2 border border-slate-700 text-slate-300 rounded-xl text-xs font-medium hover:bg-slate-700/50 transition">Batal</button>
-                <button onclick="addSalesData()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold shadow-md transition">Simpan Data</button>
-            </div>
-        </div>
+<body>
+  <div class="card">
+    <div class="icon-box">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 3v18h18"/>
+        <path d="m19 9-5 5-4-4-3 3"/>
+      </svg>
     </div>
+    
+    <h1>Rekap Penjualan</h1>
+    <p>Sedang menghubungkan ke server dashboard rekap penjualan Google Sheets...</p>
+    
+    <div class="spinner"></div>
 
-    <!-- Footer -->
-    <footer class="text-center py-6 text-xs text-slate-500">
-        &copy; 2026 Sales Recap Dashboard - Area Monitoring. Powered by GitHub Pages.
-    </footer>
+    <a id="btn-redirect" class="btn" href="https://ais-pre-vmgreydjwcuqo2kqij4njx-965477161653.asia-southeast1.run.app">
+      Buka Dashboard Sekarang &rarr;
+    </a>
 
-    <!-- Script Logic -->
-    <script>
-        let salesData = [
-            { date: "2026-10-01", id: "TRX-001", store: "KF34", spd: 14500000, beanspot: 1200000, psm: 850000, email: "fahriendwintara.real@gmail.com" },
-            { date: "2026-10-02", id: "TRX-002", store: "K288", spd: 18200000, beanspot: 2400000, psm: 1150000, email: "fahriendwintara.real@gmail.com" },
-            { date: "2026-10-03", id: "TRX-003", store: "K409", spd: 16100000, beanspot: 950000, psm: 720000, email: "fahriendwintara.real@gmail.com" },
-            { date: "2026-10-04", id: "TRX-004", store: "K883", spd: 21500000, beanspot: 3100000, psm: 1450000, email: "fahriendwintara.real@gmail.com" }
-        ];
-
-        function formatRupiah(number) {
-            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number);
-        }
-
-        function renderTable(data) {
-            const tbody = document.getElementById('salesTableBody');
-            tbody.innerHTML = '';
-
-            let totalSpd = 0;
-            let totalBeanspot = 0;
-            let totalPsmPwp = 0;
-
-            if (data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-slate-500 text-xs">Tidak ada data rekap ditemukan.</td></tr>`;
-            }
-
-            data.forEach(item => {
-                totalSpd += Number(item.spd);
-                totalBeanspot += Number(item.beanspot);
-                totalPsmPwp += Number(item.psm);
-
-                const tr = document.createElement('tr');
-                tr.className = 'hover:bg-slate-700/20 transition';
-                tr.innerHTML = `
-                    <td class="py-3 px-4 text-slate-400">${item.date}</td>
-                    <td class="py-3 px-4 font-medium text-slate-200"><span class="bg-slate-700/50 px-2 py-0.5 rounded text-[11px]">${item.id}</span></td>
-                    <td class="py-3 px-4 font-bold text-indigo-400">${item.store}</td>
-                    <td class="py-3 px-4 text-right font-semibold text-slate-200">${formatRupiah(item.spd)}</td>
-                    <td class="py-3 px-4 text-right text-amber-400 font-medium">${formatRupiah(item.beanspot)}</td>
-                    <td class="py-3 px-4 text-right text-emerald-400 font-medium">${formatRupiah(item.psm)}</td>
-                    <td class="py-3 px-4 text-slate-400 text-[11px] truncate max-w-[150px]">${item.email}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-
-            document.getElementById('totalSpd').innerText = formatRupiah(totalSpd);
-            document.getElementById('totalBeanspot').innerText = formatRupiah(totalBeanspot);
-            document.getElementById('totalPsmPwp').innerText = formatRupiah(totalPsmPwp);
-            document.getElementById('totalCount').innerText = data.length;
-            document.getElementById('dataInfo').innerText = `Menampilkan ${data.length} catatan rekap`;
-        }
-
-        document.getElementById('searchInput').addEventListener('input', function(e) {
-            const keyword = e.target.value.toLowerCase();
-            const filtered = salesData.filter(item => 
-                item.store.toLowerCase().includes(keyword) || 
-                item.id.toLowerCase().includes(keyword) ||
-                item.date.includes(keyword) ||
-                item.email.toLowerCase().includes(keyword)
-            );
-            renderTable(filtered);
-        });
-
-        function openModal() {
-            document.getElementById('dataModal').classList.remove('hidden');
-            document.getElementById('dataModal').classList.add('flex');
-            document.getElementById('inputDate').value = new Date().toISOString().split('T')[0];
-        }
-
-        function closeModal() {
-            document.getElementById('dataModal').classList.remove('flex');
-            document.getElementById('dataModal').classList.add('hidden');
-            document.getElementById('inputId').value = '';
-            document.getElementById('inputStore').value = '';
-            document.getElementById('inputSpd').value = '';
-            document.getElementById('inputBeanspot').value = '';
-            document.getElementById('inputPsm').value = '';
-            document.getElementById('inputEmail').value = '';
-        }
-
-        function addSalesData() {
-            const date = document.getElementById('inputDate').value;
-            const store = document.getElementById('inputStore').value;
-            const id = document.getElementById('inputId').value;
-            const spd = document.getElementById('inputSpd').value || 0;
-            const beanspot = document.getElementById('inputBeanspot').value || 0;
-            const psm = document.getElementById('inputPsm').value || 0;
-            const email = document.getElementById('inputEmail').value || 'fahriendwintara.real@gmail.com';
-
-            if (!date || !store || !id) {
-                alert('Mohon isi tanggal, kode toko, dan ID transaksi dengan lengkap!');
-                return;
-            }
-
-            salesData.unshift({ date, id, store, spd: Number(spd), beanspot: Number(beanspot), psm: Number(psm), email });
-            renderTable(salesData);
-            closeModal();
-        }
-
-        renderTable(salesData);
-    </script>
+    <p class="note">Jika halaman tidak terbuka otomatis dalam 2 detik, klik tombol di atas.</p>
+  </div>
 </body>
 </html>
